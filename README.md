@@ -34,9 +34,10 @@ python -m nuitka --standalone --onefile --remove-output --windows-console-mode="
 ```
 python -m nuitka --standalone --onefile --remove-output --windows-console-mode="disable" --enable-plugins="pyqt5" --output-filename="UP多人模拟抽卡器.exe" --main="PyGachaSystem.py" --windows-icon-from-ico="icon.ico"
 ```
-**与上述打包命令讲解类似**
+**与上述打包Py文件命令讲解类似**
 
 编译 `GenshinImpact.cpp` 为dll命令
-```
+```bash
 x86_64-w64-mingw32-g++ -shared -o GachaSystem.dll GenshinImpact.cpp -static-libgcc -static-libstdc++ -std=c++11 -lwinmm
 ```
+
