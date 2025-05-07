@@ -15,7 +15,7 @@
 ## 其他描述
 ### 关于打包命令
 打包项目中所有Py文件均使用`Nuitka`打包，以小幅度提升性能和速度  
-1.打包 `原神多人抽卡模拟器.py` 使用命令  
+1、打包 `原神多人抽卡模拟器.py` 使用命令  
 ```
 python -m nuitka --standalone --onefile --remove-output --windows-console-mode="disable" --enable-plugins="pyqt5" --output-filename="原神模拟多人抽卡器.exe" --main="原神多人抽卡模拟器.py" --windows-icon-from-ico="icon.ico" 
 ```
@@ -30,14 +30,15 @@ python -m nuitka --standalone --onefile --remove-output --windows-console-mode="
 8.程序入口`--main=""`，表示要打包的主文件入口  
 9.打包程序图标`--windows-icon-from-ico=""`，指定路径后打包相关的ico图标为最后生成的可执行文件图标  
 
-打包 `PyGachaSystem.py` 使用命令  
+2、打包 `PyGachaSystem.py` 使用命令  
 ```
 python -m nuitka --standalone --onefile --remove-output --windows-console-mode="disable" --enable-plugins="pyqt5" --output-filename="UP多人模拟抽卡器.exe" --main="PyGachaSystem.py" --windows-icon-from-ico="icon.ico"
 ```
-**与上述打包Py文件命令讲解类似**
+**与上述打包Py文件命令讲解类似**  
+但在类似命令结尾添加新的命令，此命令以支持打包指定路径下的dll  
+`--include-data-file="GachaSystem.dll=GachaSystem.dll"`
 
-编译 `GenshinImpact.cpp` 为dll命令
-```bash
+3、编译 `GenshinImpact.cpp` 为dll命令
+```
 x86_64-w64-mingw32-g++ -shared -o GachaSystem.dll GenshinImpact.cpp -static-libgcc -static-libstdc++ -std=c++11 -lwinmm
 ```
-
