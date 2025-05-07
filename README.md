@@ -42,3 +42,8 @@ python -m nuitka --standalone --onefile --remove-output --windows-console-mode="
 ```
 x86_64-w64-mingw32-g++ -shared -o GachaSystem.dll GenshinImpact.cpp -static-libgcc -static-libstdc++ -std=c++11 -lwinmm
 ```
+
+4、因为技术原因导致的角色抽卡不还原
+技术力尚有提升空间，所以角色池抽并未还原捕获明光机制，但是为了保证拥有45%不歪的概率所以参考了崩铁中的抽卡机制  
+在歪了可以后通过抽取添加了UP角色的常驻列表，这样就能实现在歪了之后还有一定的概率不歪  
+但是也有缺点，如果常驻角色增加则会导致UP概率稀释，最终无限接近回50%
