@@ -38,7 +38,7 @@ python -m nuitka --standalone --onefile --remove-output --windows-console-mode="
 但在类似命令结尾添加新的命令，此命令以支持打包指定路径下的dll  
 `--include-data-file="GachaSystem.dll=GachaSystem.dll"`
 
-3、编译 `GenshinImpact.cpp` 为dll命令
+3、编译 `GenshinImpact.cpp` 为动态链接dll
 ```
 x86_64-w64-mingw32-g++ -shared -o GachaSystem.dll GenshinImpact.cpp -static-libgcc -static-libstdc++ -std=c++11 -lwinmm
 ```
