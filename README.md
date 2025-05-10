@@ -32,7 +32,7 @@ python -m nuitka --standalone --onefile --remove-output --windows-console-mode="
 
 2、打包 `PyGachaSystem.py` 使用命令  
 ```
-python -m nuitka --standalone --onefile --remove-output --windows-console-mode="disable" --enable-plugins="pyqt5" --output-filename="UP多人模拟抽卡器.exe" --main="PyGachaSystem.py" --windows-icon-from-ico="icon.ico"
+python -m nuitka --standalone --onefile --remove-output --windows-console-mode="disable" --enable-plugins="pyqt5" --output-filename="UP多人模拟抽卡器.exe" --main="PyGachaSystem.py" --windows-icon-from-ico="icon.ico" --include-data-file="GachaSystem.dll=GachaSystem.dll"
 ```
 **与上述打包Py文件命令讲解类似**  
 但在类似命令结尾添加新的命令，此命令以支持打包指定路径下的dll  
