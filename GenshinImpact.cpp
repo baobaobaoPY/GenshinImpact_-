@@ -41,8 +41,8 @@ private:
     }
 
     double _calculate_4star_probability() {
-        if (four_star_counter <= 8) return 4.45;
-        else if (four_star_counter < 10) return 99.4;
+        if (four_star_counter <= 1) return 5.1;  // 十亿次生成得出最佳的概率分布
+        else if (four_star_counter <= 9) return 5.1 + (four_star_counter - 1) * 0.365;
         else return 100.0;
     }
 
@@ -117,7 +117,7 @@ public:
         four_star_counter++;
 
         // 强制保底判定
-        if (cishu >= 90) {
+        if (cishu >= 89) {
             auto item = _get_item(_handle_5star());
             cishu = 0;
             return {item, 0};
