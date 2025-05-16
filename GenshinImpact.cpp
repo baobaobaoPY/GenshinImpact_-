@@ -6,27 +6,29 @@
 
 
 // 物品池定义
-const std::vector<std::string> UP_5Stars = {"希诺宁"};
-const std::vector<std::string> UP_5Stars1 = {"温迪"};
-const std::vector<std::string> NOUP_5Stars = {"希诺宁", "琴", "迪卢克", "莫娜", "刻晴", "七七", "提纳里", "迪希雅", "梦见月瑞希"};
-const std::vector<std::string> NOUP_5Stars1 = {"温迪", "琴", "迪卢克", "莫娜", "刻晴", "七七", "提纳里", "迪希雅", "梦见月瑞希"};
-const std::vector<std::string> UP_4Stars = {"北斗", "珐露珊", "烟绯"};
-const std::vector<std::string> NOUP_4Stars_NAME = {"塔利雅", "伊法", "伊安珊", "嘉明", "夏沃蕾", "蓝砚", "欧洛伦", "卡齐娜", "赛索斯",
-                                         "夏洛蒂", "菲米尼", "琳妮特", "卡维", "米卡", "瑶瑶", "莱依拉", "坎蒂丝", "多莉",
-                                         "柯莱", "久岐忍", "云堇", "绮良良", "鹿野院平藏", "九条裟罗", "五郎", "早柚", "托马",
-                                         "罗莎莉亚", "辛焱", "砂糖", "迪奥娜", "重云", "诺艾尔", "班尼特", "菲谢尔", "凝光",
-                                         "行秋", "香菱", "雷泽", "芭芭拉"};
+const std::vector<std::string> UP_5Stars = {"爱可菲"};
+const std::vector<std::string> UP_5Stars1 = {"娜维娅"};
+const std::vector<std::string> NOUP_5Stars = {"爱可菲", "琴", "迪卢克", "莫娜", "刻晴", "七七", "提纳里", "迪希雅", "梦见月瑞希"};
+const std::vector<std::string> NOUP_5Stars1 = {"娜维娅", "琴", "迪卢克", "莫娜", "刻晴", "七七", "提纳里", "迪希雅", "梦见月瑞希"};
+const std::vector<std::string> UP_4Stars = {"伊法", "欧洛伦", "莱依拉"};
+const std::vector<std::string> NOUP_4Stars_NAME = {"塔利雅", "伊安珊", "蓝砚", "卡齐娜", "赛索斯", "嘉明", "夏沃蕾", "夏洛蒂", "菲米尼", "琳妮特", 
+                                        "卡维", "米卡", "瑶瑶", "珐露珊", "坎蒂丝", "多莉", "柯莱", "久岐忍", "云堇", "绮良良", "鹿野院平藏", 
+                                        "九条裟罗", "五郎", "早柚", "托马", "烟绯", "罗莎莉亚", "辛焱", "砂糖", "迪奥娜", "重云", "诺艾尔", 
+                                        "班尼特", "菲谢尔", "凝光", "行秋", "北斗", "香菱", "雷泽", "芭芭拉"};
+
 const std::vector<std::string> NOUP_4Stars_WEAPON = {"匣里龙吟", "祭礼剑", "笛剑", "西风剑", "雨裁", "祭礼大剑", "钟剑", "西风大剑",
-                                         "西风长枪", "匣里灭辰", "昭心", "祭礼残章", "流浪乐章", "西风秘典", "弓藏",
-                                         "祭礼弓", "绝弦", "西风猎弓"};
+                                        "西风长枪", "匣里灭辰", "昭心", "祭礼残章", "流浪乐章", "西风秘典", "弓藏",
+                                        "祭礼弓", "绝弦", "西风猎弓"};
+
 const std::vector<std::string> BLUE_ITEMS = {"飞天御剑", "黎明神剑", "冷刃", "以理服人", "沐浴龙血的剑", "铁影阔剑", "黑缨枪",
-                                  "翡玉法球", "讨龙英杰谭", "魔导绪论", "弹弓", "神射手之誓", "鸦羽弓"};
+                                        "翡玉法球", "讨龙英杰谭", "魔导绪论", "弹弓", "神射手之誓", "鸦羽弓"};
 
 class RoleGachaSystem {
 private:
     std::mt19937 gen;
     std::uniform_real_distribution<> dis;
     
+    int post_5star_counter;  // 记录五星出现后的抽卡次数
     int cishu;
     int four_star_counter;
     int wai_5star;
@@ -35,16 +37,18 @@ private:
     bool targeted_UP;
     
     double _calculate_5star_probability() {
-        if (cishu <= 73) return 0.6;
+        if (cishu <= 73) return 0.6438;
         else if (cishu <= 89) return 0.6 + (cishu - 73) * 6;
         else return 100.0;
     }
 
     double _calculate_4star_probability() {
-        if (four_star_counter <= 1) return 5.1;  // 十亿次生成得出最佳的概率分布
-        else if (four_star_counter <= 9) return 5.1 + (four_star_counter - 1) * 0.365;
-        else return 100.0;
-    }
+        if (four_star_counter < 10) {
+            // 如果在五星后的10抽内则概率翻倍
+            return (post_5star_counter >= 0 && post_5star_counter < 10) ? 11.124 : 5.1;
+            }
+        return 100.0;
+        }
 
     int _handle_5star() {
         if (wai_5star == 1) {
@@ -102,6 +106,7 @@ public:
     RoleGachaSystem() : gen(std::random_device{}()), dis(0.0, 1.0) {
         reset();
         targeted_UP = false;
+        post_5star_counter = -1;
     }
 
     void reset() {
@@ -110,9 +115,16 @@ public:
         wai_5star = 0;
         wai_4star = 0;
         last_nonup_4star = "";
+        post_5star_counter = -1;
     }
 
     std::pair<std::string, int> pull() {
+        if (post_5star_counter >= 0) {
+            if (++post_5star_counter >= 10) {
+                post_5star_counter = -1;
+            }
+        }
+
         cishu++;
         four_star_counter++;
 
@@ -120,6 +132,7 @@ public:
         if (cishu >= 89) {
             auto item = _get_item(_handle_5star());
             cishu = 0;
+            post_5star_counter = 0;
             return {item, 0};
         }
         if (four_star_counter >= 10) {
@@ -135,6 +148,7 @@ public:
         if (rand_val < p5) {
             auto item = _get_item(_handle_5star());
             cishu = 0;
+            post_5star_counter = 0;
             return {item, 0};
         }
         if (rand_val < (p5 + p4)) {
