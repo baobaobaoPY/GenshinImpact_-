@@ -1,7 +1,9 @@
+import pyautogui
 import ctypes
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel, QComboBox, QTextEdit, \
     QMessageBox
+from PyQt5.QtGui import QIcon
 
 
 class GenshinGachaWindow(QMainWindow):
@@ -13,13 +15,13 @@ class GenshinGachaWindow(QMainWindow):
         self.current_count = 1
         # 初始化DLL接口
         self.init_dll()
+        self.setWindowIcon(QIcon("hk4e_cn.ico"))
 
     def init_dll(self):
         """初始化动态链接库接口"""
         try:
             # 加载DLL
-            current_dir = __file__.rsplit('\\', 1)[0]
-            dll_path = current_dir + '\\GachaSystem.dll'
+            dll_path = './GachaSystem.zip'
             self.gacha_dll = ctypes.CDLL(dll_path)
 
             # 设置函数原型
@@ -46,8 +48,9 @@ class GenshinGachaWindow(QMainWindow):
             # 创建系统实例
             self.gacha_system = self.gacha_dll.CreateGachaSystem()
 
-        except Exception as e:
-            self.show_error("DLL加载失败", f"无法加载抽卡系统DLL：{str(e)}")
+        except Exception as e:  #ff5f40
+            self.show_error("「GachaSystem.zip」加载异常", f"加载压缩文件「<font color='#9140ff'>GachaSystem.zip</font>」时出现未知异常：<p><font color='#ff5f40'>{str(e)}</font></p>")
+            sys.exit(-1)
 
     def show_error(self, title, message):
         """显示错误对话框"""
@@ -56,7 +59,7 @@ class GenshinGachaWindow(QMainWindow):
     def init_ui(self):
         """初始化UI界面"""
         self.setWindowTitle(f"原神模拟多人抽卡器 - UID: {self.di}")
-        self.setGeometry(100, 100, 300, 888)
+        self.setGeometry(33, 66, 300, 900)
 
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -70,8 +73,8 @@ class GenshinGachaWindow(QMainWindow):
         layout.addWidget(self.result_text)
 
         self.track_combo = QComboBox(self)
-        self.track_combo.addItem("希诺宁")
-        self.track_combo.addItem("温迪")
+        self.track_combo.addItem("爱可菲")
+        self.track_combo.addItem("娜维娅")
         self.track_combo.currentIndexChanged.connect(self.change_track)
         layout.addWidget(self.track_combo)
 
@@ -133,19 +136,50 @@ class GenshinGachaWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    # 创建6个窗口实例
-    window1 = GenshinGachaWindow("100452690")
-    window2 = GenshinGachaWindow("119420002")
-    window3 = GenshinGachaWindow("300000000")
-    window4 = GenshinGachaWindow("208938424")
-    window5 = GenshinGachaWindow("289933163")
-    window6 = GenshinGachaWindow("189933163")
+    # 获取屏幕分辨率并判断
+    screen_width, screen_height = pyautogui.size()
+    is_high_res = (screen_width, screen_height) in {(2560, 1440), (2560, 1600)}
 
-    window1.show()
-    window2.show()
-    window3.show()
-    window4.show()
-    window5.show()
-    window6.show()
+    # 动态计算窗口参数
+    base_params = {
+        "x": 33,
+        "y": 66,
+        "width": 300,
+        "height": 1250 if is_high_res else 900,
+        "x_offset": 310
+    }
+
+    # 基础窗口列表
+    window_list = [
+        GenshinGachaWindow("100452690"),
+        GenshinGachaWindow("119420002"),
+        GenshinGachaWindow("300000000"),
+        GenshinGachaWindow("208938424"),
+        GenshinGachaWindow("289933163"),
+        GenshinGachaWindow("189933163")
+    ]
+
+    # 高分辨率追加窗口
+    if is_high_res:
+        window_list += [
+            GenshinGachaWindow("147913120"),
+            GenshinGachaWindow("200032997")
+        ]
+
+    # 智能排列窗口
+    screen_center = screen_width // 2
+    total_width = len(window_list) * base_params["width"] + (len(window_list) - 1) * 10
+    if total_width > screen_width:
+        base_params["x"] = max(50, screen_center - total_width // 2)
+
+    # 设置窗口几何
+    for idx, window in enumerate(window_list):
+        window.setGeometry(
+            base_params["x"] + idx * base_params["x_offset"],
+            base_params["y"],
+            base_params["width"],
+            base_params["height"]
+        )
+        window.show()
 
     sys.exit(app.exec_())
